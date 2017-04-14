@@ -11,15 +11,17 @@ deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
 
     def utils = new io.fabric8.Utils()
 
-    // get the repos we want to update
+    // check the repos for open PRs
     def ghProjects = splitRepoNames(repoNames)
 
-    def openProjects
+    // get a list of openshft project names that are pull requests
+    def osProjects
     container('clients'){
         def projectList = sh(script: 'oc get projects | grep Active | grep pr-', returnStdout: true).toString().trim()
-        openProjects = splitProjectNames(projectList)
+        osProjects = splitProjectNames(projectList)
     }
 
+    // remove any names that still have open PRs in github
     for (ghProject in ghProjects) {
         ghProject = ghProject.toString().trim()
 
@@ -27,21 +29,22 @@ deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
         openPRs = covertToProjectNames(openPRs)
 
         if (openPRs){
-            openProjects.removeAll(openPRs as Object[])
+            osProjects.removeAll(openPRs as Object[])
         }
 
         openPRs = null
     }
-    def command = 'oc delete project '
-    for (p in openProjects) {
-        command = command + ' ' + p
+    if (osProjects){
+        def command = 'oc delete project '
+        for (p in osProjects) {
+            command = command + ' ' + p
 
+        }
+        echo "running: ${command}"
+        container('clients'){
+            sh command
+        }
     }
-    echo "running: ${command}"
-    container('clients'){
-        sh command
-    }
-
 }
 
 @NonCPS
