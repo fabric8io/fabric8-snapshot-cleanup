@@ -26,7 +26,8 @@ deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
         ghProject = ghProject.toString().trim()
 
         def openPRs = utils.getOpenPRs(ghProject)
-        openPRs = covertToProjectNames(openPRs)
+        def items = ghProject.split('/')
+        openPRs = covertToProjectNames(openPRs, items[1])
 
         if (openPRs){
             osProjects.removeAll(openPRs as Object[])
@@ -44,6 +45,8 @@ deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
         container('clients'){
             sh command
         }
+    } else {
+        echo 'no project to delete'
     }
 }
 
@@ -71,10 +74,10 @@ def splitProjectNames(projectsNames) {
 }
 
 @NonCPS
-def covertToProjectNames(openPRs) {
+def covertToProjectNames(openPRs, repo) {
     def list = []
     for (pr in openPRs) {
-        list << 'fabric8-ui-pr-' + pr
+        list << 'fabric8-ui-pr-' + pr + '-' + repo
     }
     return list
 }
