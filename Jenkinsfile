@@ -77,7 +77,9 @@ def splitProjectNames(projectsNames) {
 def covertToProjectNames(openPRs, repo) {
     def list = []
     for (pr in openPRs) {
-        list << 'fabric8-ui-pr-' + pr + '-' + repo
+        def name = 'fabric8-ui-pr-' + pr + '-' + repo
+        echo "look for openshift project ${name}"
+        list << name
     }
     return list
 }
