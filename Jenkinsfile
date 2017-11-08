@@ -7,7 +7,7 @@ deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
         ]
     )
     
-    def repoNames = 'fabric8io/fabric8-ui,fabric8io/fabric8-planner,fabric8-ui/fabric8-runtime-console'
+    def repoNames = 'fabric8-ui/fabric8-ui,fabric8-ui/fabric8-planner,fabric8-ui/fabric8-runtime-console'
 
     def utils = new io.fabric8.Utils()
 
