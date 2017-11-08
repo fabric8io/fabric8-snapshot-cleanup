@@ -1,4 +1,4 @@
-@Library('github.com/rawlingsj/fabric8-pipeline-library@master')
+@Library('github.com/fabric8io/fabric8-pipeline-library@master')
 def dummy
 deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
     properties(
