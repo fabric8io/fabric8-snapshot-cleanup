@@ -7,47 +7,47 @@ deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
         ]
     )
     
-//    def repoNames = 'fabric8-ui/fabric8-ui,fabric8-ui/fabric8-planner,fabric8-launcher/launcher-backend'
-//
-//    def utils = new io.fabric8.Utils()
-//
-//    // check the repos for open PRs
-//    def ghProjects = splitRepoNames(repoNames)
-//
-//    // get a list of openshft project names that are pull requests
-//    def osProjects
-//    container('clients'){
-//        def projectList = sh(script: 'oc get projects | grep Active | grep pr-', returnStdout: true).toString().trim()
-//        osProjects = splitProjectNames(projectList)
-//    }
-//
-//    // remove any names that still have open PRs in github
-//    for (ghProject in ghProjects) {
-//        ghProject = ghProject.toString().trim()
-//
-//        def openPRs = utils.getOpenPRs(ghProject)
-//        def items = ghProject.split('/')
-//        openPRs = covertToProjectNames(openPRs, items[1])
-//
-//        if (openPRs){
-//            osProjects.removeAll(openPRs as Object[])
-//        }
-//
-//        openPRs = null
-//    }
-//    if (osProjects){
-//        def command = 'oc delete project '
-//        for (p in osProjects) {
-//            command = command + ' ' + p
-//
-//        }
-//        echo "running: ${command}"
-//        container('clients'){
-//            sh command
-//        }
-//    } else {
-//        echo 'no project to delete'
-//    }
+    def repoNames = 'fabric8-ui/fabric8-ui,fabric8-ui/fabric8-planner,fabric8-launcher/launcher-backend'
+
+    def utils = new io.fabric8.Utils()
+
+    // check the repos for open PRs
+    def ghProjects = splitRepoNames(repoNames)
+
+    // get a list of openshft project names that are pull requests
+    def osProjects
+    container('clients'){
+        def projectList = sh(script: 'oc get projects | grep Active | grep pr-', returnStdout: true).toString().trim()
+        osProjects = splitProjectNames(projectList)
+    }
+
+    // remove any names that still have open PRs in github
+    for (ghProject in ghProjects) {
+        ghProject = ghProject.toString().trim()
+
+        def openPRs = utils.getOpenPRs(ghProject)
+        def items = ghProject.split('/')
+        openPRs = covertToProjectNames(openPRs, items[1])
+
+        if (openPRs){
+            osProjects.removeAll(openPRs as Object[])
+        }
+
+        openPRs = null
+    }
+    if (osProjects){
+        def command = 'oc delete project '
+        for (p in osProjects) {
+            command = command + ' ' + p
+
+        }
+        echo "running: ${command}"
+        container('clients'){
+            sh command
+        }
+    } else {
+        echo 'no project to delete'
+    }
 }
 
 @NonCPS
