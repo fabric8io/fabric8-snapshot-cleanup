@@ -3,7 +3,7 @@ def dummy
 deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
     properties(
         [
-            pipelineTriggers([cron('0 0 */6 ? * *')]),
+            pipelineTriggers([cron('0 */6 * * *')]),
         ]
     )
 
