@@ -3,10 +3,10 @@ def dummy
 deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
     properties(
         [
-            pipelineTriggers([cron('0 */3 * * *')]),
+            pipelineTriggers([cron('0 0 */6 ? * *')]),
         ]
     )
-    
+
     def repoNames = 'fabric8-ui/fabric8-ui,fabric8-ui/fabric8-planner,fabric8-launcher/launcher-backend'
 
     def utils = new io.fabric8.Utils()
@@ -36,15 +36,16 @@ deployOpenShiftNode(openshiftConfigSecretName: 'fabric8-intcluster-config'){
         openPRs = null
     }
     if (osProjects){
-        def command = 'oc delete project '
+        def command
         for (p in osProjects) {
-            command = command + ' ' + p
+            command = 'oc delete project' + ' ' + p
+            echo "running: ${command}"
+            container('clients'){
+                sh command
+            }
 
         }
-        echo "running: ${command}"
-        container('clients'){
-            sh command
-        }
+
     } else {
         echo 'no project to delete'
     }
